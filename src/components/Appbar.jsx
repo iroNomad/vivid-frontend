@@ -74,11 +74,15 @@ export default function PrimarySearchAppBar() {
 
     const navigate = useNavigate();
 
-    const handleMenuClose = () => {
-        setAnchorEl(null);
+    const handleMenuClose = (path) => {
+        setAnchorEl(null); // Close the menu
         handleMobileMenuClose();
-        navigate('/mypage'); // Redirect to /mypage
+
+        if (path) {
+            navigate(path);  // Navigate to the given path
+        }
     };
+        // navigate('/mypage'); // Redirect to /mypage
 
     const handleMobileMenuOpen = (event) => {
         setMobileMoreAnchorEl(event.currentTarget);
@@ -101,8 +105,8 @@ export default function PrimarySearchAppBar() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}>My Page</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+            <MenuItem onClick={() => handleMenuClose("/mypage")}>My Page</MenuItem>
+            <MenuItem onClick={() => handleMenuClose("/logout")}>Logout</MenuItem>
         </Menu>
     );
 
