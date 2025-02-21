@@ -1,12 +1,20 @@
 // import React from 'react';
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
-import TextField from '@mui/material/TextField';
+import React, { useState } from "react";
+import {Button, Modal, Box, Typography, TextField, Input} from "@mui/material";
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+});
 
 const style = {
     position: 'absolute',
@@ -21,38 +29,52 @@ const style = {
     color: 'black',
 };
 
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-});
-
 function MyPage() {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    const[title, setTitle] = React.useState('');
-    const[description, setDescription] = React.useState('');
-    const handleUpload = event => {
-        event.preventDefault();
-        const video = {title, description}
-        console.log('video - ', video);
+    const [title, setTitle] = React.useState('');
+    const [description, setDescription] = React.useState('');
+    const [selectedFile, setSelectedFile] = useState(null);
 
-        fetch("http://localhost:8080/upload", {
-            method: 'POST',
-            headers: {"content-type": "application/json"},
-            body: JSON.stringify(video),
+    // Handle file selection
+    const handleFileChange = (event) => {
+        const file = event.target.files[0]; // Get the first selected file
+        if (file) {
+            setSelectedFile(file);
+            console.log("Selected file:", file);
+        }
+    };
+
+    // Handle file upload
+    const handleUpload = async () => {
+        if (!selectedFile) {
+            alert("Please select a video file first!");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("description", description);
+        formData.append("file", selectedFile); // Append video file
+
+        try {
+            const response = await fetch("http://localhost:8080/upload", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (response.ok) {
+                alert("Video uploaded successfully!");
+                handleClose(); // Close the modal after upload
+            } else {
+                alert("Upload failed!");
             }
-        ).then(()=>{
-            console.log('video uploaded');
-        })
-    }
+        } catch (error) {
+            console.error("Error uploading video:", error);
+            alert("Upload error!");
+        }
+    };
 
     return (
         <div>
@@ -76,9 +98,9 @@ function MyPage() {
                         startIcon={<CloudUploadIcon />}
                     >
                         Select video file
-                        <VisuallyHiddenInput
+                        <Input
                             type="file"
-                            onChange={(event) => console.log(event.target.files)}
+                            onChange={handleFileChange}
                             multiple
                         />
                     </Button>
