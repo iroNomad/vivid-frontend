@@ -6,7 +6,7 @@ import { Routes, Route } from 'react-router-dom';
 import MyPage from './pages/MyPage.jsx';
 import TitlebarImageList from "./components/ImageList.jsx";
 
-function App() {
+export default function App() {
     const [videos, setVideos] = useState([]);
 
     useEffect(() => {
@@ -35,5 +35,3 @@ function App() {
         </>
     );
 }
-
-export default App;

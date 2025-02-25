@@ -28,7 +28,7 @@ const style = {
     color: 'black',
 };
 
-function MyPage() {
+export default function MyPage() {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -48,7 +48,7 @@ function MyPage() {
     // Handle file upload
     const handleUpload = async () => {
         if (!selectedFile) {
-            alert("Please select a video file first!");
+            alert("영상 파일을 선택하십시오!");
             return;
         }
 
@@ -67,11 +67,11 @@ function MyPage() {
                 alert("Video uploaded successfully!");
                 handleClose(); // Close the modal after upload
             } else {
-                alert("Upload failed!");
+                alert("업로드 실패했습니다!");
             }
         } catch (error) {
             console.error("Error uploading video:", error);
-            alert("Upload error!");
+            alert("업로드 오류!");
         }
     };
 
@@ -135,5 +135,3 @@ function MyPage() {
         </div>
     );
 }
-
-export default MyPage;
