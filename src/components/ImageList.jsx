@@ -3,7 +3,7 @@ import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 
-export default function TitlebarImageList({videos}) {
+export default function TitlebarBelowImageList({videos}) {
     return (
         <ImageList sx={{ width: '100%', height: 'auto' }} cols={4} gap={12}>
             {videos.map((item) => (
@@ -21,6 +21,7 @@ export default function TitlebarImageList({videos}) {
                                 {item.uploadDateTime}
                             </>
                         }
+                        position="below"
                         sx={{
                             textAlign: 'left',
                         }}
