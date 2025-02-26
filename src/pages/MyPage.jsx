@@ -55,7 +55,7 @@ export default function MyPage() {
         const formData = new FormData();
         formData.append("title", title);
         formData.append("description", description);
-        formData.append("file", selectedFile); // Append video file
+        formData.append("video", selectedFile); // Append video file
 
         try {
             const response = await fetch("http://localhost:8080/upload", {
@@ -64,10 +64,15 @@ export default function MyPage() {
             });
 
             if (response.ok) {
-                alert("Video uploaded successfully!");
+                const data = await response.json(); // Get the JSON response from backend
+
+                alert("영상 업로드 완료!");
+                console.log("Uploaded Video URL:", data.videoUrl);
+                console.log("Generated Thumbnail URL:", data.thumbnailUrl);
+
                 handleClose(); // Close the modal after upload
             } else {
-                alert("업로드 실패했습니다!");
+                alert("영상 업로드 실패.");
             }
         } catch (error) {
             console.error("Error uploading video:", error);
