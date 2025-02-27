@@ -55,7 +55,7 @@ export default function MyPage() {
         const formData = new FormData();
         formData.append("title", title);
         formData.append("description", description);
-        formData.append("video", selectedFile); // Append video file
+        formData.append("video", selectedFile);
 
         try {
             const response = await fetch("http://localhost:8080/upload", {
