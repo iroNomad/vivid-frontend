@@ -6,16 +6,16 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
-import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import MailIcon from '@mui/icons-material/Mail';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { useNavigate } from 'react-router-dom';
+import Modal from '@mui/material/Modal';
+import {Button, TextField} from "@mui/material";
+import {useState} from "react";
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -57,12 +57,65 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-export default function PrimarySearchAppBar() {
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+    color: 'black',
+};
+
+export default function PrimarySearchAppBar({loginState}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+    const [userName, setUserName] = React.useState('');
+    const [password, setPassword] = React.useState('');
+    const [error, setError] = useState("");
 
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+    const [open, setOpen] = React.useState(false);
+
+    const handleModalOpen = () => setOpen(true);
+    const handleModalClose = () => setOpen(false);
+
+    const handleLogin = async (event) => {
+        event.preventDefault(); // Prevents page reload
+
+        try {
+            const response = await fetch("http://localhost:8080/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username: userName, // Match the backend field names
+                    password: password,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("로그인 실패! 아이디 또는 비밀번호를 확인하세요.");
+            }
+
+            const data = await response.json();
+            localStorage.setItem("token", data.token); // Store JWT token
+
+            alert("로그인 성공!"); // Success message
+            handleModalClose(); // Close the modal
+            setUserName("");
+            setPassword("");
+            setError("");
+        } catch (error) {
+            setError(error.message); // Display error message
+        }
+    };
 
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -126,26 +179,6 @@ export default function PrimarySearchAppBar() {
             open={isMobileMenuOpen}
             onClose={handleMobileMenuClose}
         >
-            <MenuItem>
-                <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                    <Badge badgeContent={4} color="error">
-                        <MailIcon />
-                    </Badge>
-                </IconButton>
-                <p>Messages</p>
-            </MenuItem>
-            <MenuItem>
-                <IconButton
-                    size="large"
-                    aria-label="show 17 new notifications"
-                    color="inherit"
-                >
-                    <Badge badgeContent={17} color="error">
-                        <NotificationsIcon />
-                    </Badge>
-                </IconButton>
-                <p>Notifications</p>
-            </MenuItem>
             <MenuItem onClick={handleProfileMenuOpen}>
                 <IconButton
                     size="large"
@@ -162,6 +195,7 @@ export default function PrimarySearchAppBar() {
     );
 
     return (
+        <>
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="fixed" sx={{ width: '100%' }}>
                 <Toolbar>
@@ -194,30 +228,19 @@ export default function PrimarySearchAppBar() {
                     </Search>
                     <Box sx={{ flexGrow: 1 }} />
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                            <Badge badgeContent={4} color="error">
-                                <MailIcon />
-                            </Badge>
-                        </IconButton>
-                        <IconButton
-                            size="large"
-                            aria-label="show 17 new notifications"
-                            color="inherit"
-                        >
-                            <Badge badgeContent={17} color="error">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
                         <IconButton
                             size="large"
                             edge="end"
                             aria-label="account of current user"
                             aria-controls={menuId}
                             aria-haspopup="true"
-                            onClick={handleProfileMenuOpen}
+                            onClick={(loginState == true) ? handleProfileMenuOpen : handleModalOpen}
                             color="inherit"
                         >
                             <AccountCircle />
+                            <Typography variant="button" sx={{ display: 'block' }}>
+                                {(loginState == true) ? "마이 페이지" : "로그인"}
+                            </Typography>
                         </IconButton>
                     </Box>
                     <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
@@ -237,5 +260,42 @@ export default function PrimarySearchAppBar() {
             {renderMobileMenu}
             {renderMenu}
         </Box>
+            <Modal
+                open={open}
+                onClose={handleModalClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                        회원 로그인
+                    </Typography>
+                    <br/>
+                    <TextField
+                        id="outlined-basic"
+                        label="사용자 아이디"
+                        variant="outlined"
+                        fullWidth
+                        required
+                        value={userName}
+                        onChange={(event) => setUserName(event.target.value)}
+                    />
+                    <br/>
+                    <br/>
+                    <TextField
+                        id="outlined-basic"
+                        label="비밀번호"
+                        variant="outlined"
+                        fullWidth
+                        required
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
+                    />
+                    <br/>
+                    <br/>
+                    <Button variant="contained" onClick={handleLogin}>로그인</Button>
+                </Box>
+            </Modal>
+        </>
     );
 }

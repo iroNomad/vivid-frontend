@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import PrimarySearchAppBar from './components/Appbar.jsx';
+import PrimarySearchAppBar from './components/PrimarySearchAppBar.jsx';
 import { Routes, Route } from 'react-router-dom';
 import MyPage from './pages/MyPage.jsx';
 import TitlebarImageList from "./components/ImageList.jsx";
@@ -8,6 +8,7 @@ import VideoPage from "./pages/VideoPage.jsx";
 
 export default function App() {
     const [videos, setVideos] = useState([]);
+    const [loginState, setLoginState] = useState(!!localStorage.getItem("token")); // Initialize based on stored token
 
     useEffect(() => {
         const fetchVideos = async () => {
@@ -27,11 +28,11 @@ export default function App() {
 
     return (
         <>
-            <PrimarySearchAppBar />
+            <PrimarySearchAppBar loginState={loginState} />
             <Routes>
                 <Route path="/" element={<TitlebarImageList videos={videos} />} /> {/* Pass videos as prop */}
                 <Route path="/mypage" element={<MyPage />} />
-                <Route path="/video/:videoId" element={<VideoPage videos={videos} />} />
+                <Route path="/video/:videoId" element={<VideoPage />} />
             </Routes>
         </>
     );

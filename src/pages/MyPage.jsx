@@ -67,8 +67,6 @@ export default function MyPage() {
                 const data = await response.json(); // Get the JSON response from backend
 
                 alert("영상 업로드 완료!");
-                console.log("Uploaded Video URL:", data.videoUrl);
-                console.log("Generated Thumbnail URL:", data.thumbnailUrl);
 
                 handleClose(); // Close the modal after upload
             } else {
