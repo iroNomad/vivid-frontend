@@ -9,7 +9,7 @@ export default function TitlebarBelowImageList({videos}) {
         <ImageList sx={{ width: '100%', height: 'auto' }} cols={4} gap={12}>
             {videos.map((item) => (
                 <Link
-                    to={`/video/${item.id}`}
+                    to={`/video/${item.videoId}`}
                     style={{
                         textDecoration: 'none',
                         color: 'inherit',
@@ -22,13 +22,17 @@ export default function TitlebarBelowImageList({videos}) {
                             src={item.thumbnailFileURL}
                             alt={item.title}
                             loading="lazy"
+                            style={{
+                                width: '100%',
+                                aspectRatio: '16 / 9', // ✅ Keeps all images in 16:9 ratio
+                            }}
                         />
                         <ImageListItemBar
                             title={item.title}
                             subtitle={
                                 <>
                                     {item.userId} <br />
-                                    {item.uploadDateTime}
+                                    {item.uploadDate}
                                 </>
                             }
                             position="below"

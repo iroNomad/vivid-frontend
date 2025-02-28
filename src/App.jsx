@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import PrimarySearchAppBar from './components/Appbar.jsx';
-import VideoCard from './components/Card.jsx'; // Import updated Card component
 import { Routes, Route } from 'react-router-dom';
 import MyPage from './pages/MyPage.jsx';
 import TitlebarImageList from "./components/ImageList.jsx";
@@ -32,7 +31,7 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<TitlebarImageList videos={videos} />} /> {/* Pass videos as prop */}
                 <Route path="/mypage" element={<MyPage />} />
-                <Route path="/video/:videoId" element={<VideoPage video={videos[0]} />} />
+                <Route path="/video/:videoId" element={<VideoPage videos={videos} />} />
             </Routes>
         </>
     );
