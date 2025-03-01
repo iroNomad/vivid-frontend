@@ -100,6 +100,11 @@ export default function PrimarySearchAppBar({loginState}) {
                 }),
             });
 
+            if (response.status === 401) {
+                alert("아이디 또는 비밀번호가 잘못되었습니다."); // Show error in UI
+                return; // Stop further execution
+            }
+
             if (!response.ok) {
                 throw new Error("로그인 실패! 아이디 또는 비밀번호를 확인하세요.");
             }
@@ -109,9 +114,11 @@ export default function PrimarySearchAppBar({loginState}) {
 
             alert("로그인 성공!"); // Success message
             handleModalClose(); // Close the modal
-            setUserName("");
-            setPassword("");
-            setError("");
+            // setUserName("");
+            // setPassword("");
+            // setError("");
+
+            window.location.reload();
         } catch (error) {
             setError(error.message); // Display error message
         }
@@ -136,6 +143,11 @@ export default function PrimarySearchAppBar({loginState}) {
         }
     };
 
+    const logout = () => {
+        localStorage.removeItem("token"); // Remove token
+        window.location.href = "/"; // Redirect to main page
+    };
+
     const handleMobileMenuOpen = (event) => {
         setMobileMoreAnchorEl(event.currentTarget);
     };
@@ -158,7 +170,7 @@ export default function PrimarySearchAppBar({loginState}) {
             onClose={handleMenuClose}
         >
             <MenuItem onClick={() => handleMenuClose("/mypage")}>My Page</MenuItem>
-            <MenuItem onClick={() => handleMenuClose("/logout")}>Logout</MenuItem>
+            <MenuItem onClick={() => logout()}>Logout</MenuItem>
         </Menu>
     );
 
