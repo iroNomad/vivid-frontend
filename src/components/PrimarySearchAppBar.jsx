@@ -75,15 +75,55 @@ export default function PrimarySearchAppBar({loginState}) {
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
     const [userName, setUserName] = React.useState('');
     const [password, setPassword] = React.useState('');
+    const [regUserName, setRegUserName] = React.useState('');
+    const [regPassword, setRegPassword] = React.useState('');
+    const [regPasswordConfirm, setRegPasswordConfirm] = React.useState('');
     const [error, setError] = useState("");
 
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
     const [open, setOpen] = React.useState(false);
+    const [regModalopen, setRegModalOpen] = React.useState(false);
 
     const handleModalOpen = () => setOpen(true);
     const handleModalClose = () => setOpen(false);
+
+    const handleRegModalOpen = () => setRegModalOpen(true);
+    const handleRegModalClose = () => setRegModalOpen(false);
+
+    const handleRegister = () => {
+        // Username Validation
+        if (regUserName.length < 4 || regUserName.length > 20) {
+            alert("사용자 이름은 4자 이상 20자 이하여야 합니다.");
+            return;
+        }
+
+        if (!/^[a-zA-Z0-9_]+$/.test(regUserName)) {
+            alert("사용자 이름은 영문자, 숫자, 밑줄(_)만 사용할 수 있습니다.");
+            return;
+        }
+
+        // Password Validation
+        if (!/^[a-zA-Z0-9!@#$%]+$/.test(regPassword)) {
+            alert("비밀번호는 영문자, 숫자, 그리고 !@#$% 기호만 사용할 수 있습니다.");
+            return;
+        }
+
+        if (regPassword.length < 8 || regPassword.length > 20) {
+            alert("비밀번호는 8자 이상 20자 이하여야 합니다.");
+            return;
+        }
+
+        if (regPassword !== regPasswordConfirm) {
+            alert("비밀번호가 일치하지 않습니다.");
+            return;
+        }
+
+        // Proceed with registration logic
+        alert("회원가입 성공!");
+    };
+
 
     const handleLogin = async (event) => {
         event.preventDefault(); // Prevents page reload
@@ -102,7 +142,7 @@ export default function PrimarySearchAppBar({loginState}) {
 
             if (response.status === 401) {
                 alert("아이디 또는 비밀번호가 잘못되었습니다."); // Show error in UI
-                return; // Stop further execution
+                return;
             }
 
             if (!response.ok) {
@@ -112,15 +152,12 @@ export default function PrimarySearchAppBar({loginState}) {
             const data = await response.json();
             localStorage.setItem("token", data.token); // Store JWT token
 
-            alert("로그인 성공!"); // Success message
-            handleModalClose(); // Close the modal
-            // setUserName("");
-            // setPassword("");
-            // setError("");
+            alert("로그인 성공!");
+            handleModalClose();
 
             window.location.reload();
         } catch (error) {
-            setError(error.message); // Display error message
+            setError(error.message);
         }
     };
 
@@ -305,7 +342,71 @@ export default function PrimarySearchAppBar({loginState}) {
                     />
                     <br/>
                     <br/>
+                    <Typography
+                    >
+                        화원 아니신가요? <Button onClick={() => {
+                            handleModalOpen();
+                            handleRegModalOpen();
+                        }}>회원가입하기</Button>
+                    </Typography>
+                    <br/>
                     <Button variant="contained" onClick={handleLogin}>로그인</Button>
+                </Box>
+            </Modal>
+
+            <Modal
+                open={regModalopen}
+                onClose={handleRegModalClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                        회원가입
+                    </Typography>
+                    <br/>
+                    <TextField
+                        id="outlined-basic"
+                        label="새 사용자 아이디"
+                        variant="outlined"
+                        fullWidth
+                        required
+                        value={regUserName}
+                        onChange={(event) => setRegUserName(event.target.value)}
+                    />
+                    <br/>
+                    <br/>
+                    <TextField
+                        id="outlined-basic"
+                        label="새 비밀번호"
+                        variant="outlined"
+                        fullWidth
+                        required
+                        value={regPassword}
+                        onChange={(event) => setRegPassword(event.target.value)}
+                    />
+                    <br/>
+                    <br/>
+                    <TextField
+                        id="outlined-basic"
+                        label="비밀번호 확인"
+                        variant="outlined"
+                        fullWidth
+                        required
+                        value={regPasswordConfirm}
+                        onChange={(event) => setRegPasswordConfirm(event.target.value)}
+                    />
+                    <br/>
+                    <br/>
+                    <Typography
+                    >
+                        이미 가입하셨나요? <Button onClick={() => {
+                        handleRegModalClose();
+                        handleModalOpen();
+                    }}>로그인하기</Button>
+                    </Typography>
+                    <br/>
+                    <Button variant="contained" onClick={handleRegister}>가입하기</Button>
                 </Box>
             </Modal>
         </>
