@@ -86,11 +86,11 @@ export default function PrimarySearchAppBar({loginState}) {
     const [open, setOpen] = React.useState(false);
     const [regModalopen, setRegModalOpen] = React.useState(false);
 
-    const handleModalOpen = () => setOpen(true);
-    const handleModalClose = () => setOpen(false);
+    const openLoginModal = () => setOpen(true);
+    const closeLoginModal = () => setOpen(false);
 
-    const handleRegModalOpen = () => setRegModalOpen(true);
-    const handleRegModalClose = () => setRegModalOpen(false);
+    const openRegModal = () => setRegModalOpen(true);
+    const closeRegModal = () => setRegModalOpen(false);
 
     const handleRegister = () => {
         // Username Validation
@@ -153,7 +153,7 @@ export default function PrimarySearchAppBar({loginState}) {
             localStorage.setItem("token", data.token); // Store JWT token
 
             alert("로그인 성공!");
-            handleModalClose();
+            closeLoginModal();
 
             window.location.reload();
         } catch (error) {
@@ -283,7 +283,7 @@ export default function PrimarySearchAppBar({loginState}) {
                             aria-label="account of current user"
                             aria-controls={menuId}
                             aria-haspopup="true"
-                            onClick={(loginState == true) ? handleProfileMenuOpen : handleModalOpen}
+                            onClick={(loginState == true) ? handleProfileMenuOpen : openLoginModal}
                             color="inherit"
                         >
                             <AccountCircle />
@@ -311,7 +311,7 @@ export default function PrimarySearchAppBar({loginState}) {
         </Box>
             <Modal
                 open={open}
-                onClose={handleModalClose}
+                onClose={closeLoginModal}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
@@ -345,8 +345,8 @@ export default function PrimarySearchAppBar({loginState}) {
                     <Typography
                     >
                         화원 아니신가요? <Button onClick={() => {
-                            handleModalOpen();
-                            handleRegModalOpen();
+                            closeLoginModal();
+                            openRegModal();
                         }}>회원가입하기</Button>
                     </Typography>
                     <br/>
@@ -356,7 +356,7 @@ export default function PrimarySearchAppBar({loginState}) {
 
             <Modal
                 open={regModalopen}
-                onClose={handleRegModalClose}
+                onClose={closeRegModal}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
@@ -401,8 +401,8 @@ export default function PrimarySearchAppBar({loginState}) {
                     <Typography
                     >
                         이미 가입하셨나요? <Button onClick={() => {
-                        handleRegModalClose();
-                        handleModalOpen();
+                        closeRegModal();
+                        openLoginModal();
                     }}>로그인하기</Button>
                     </Typography>
                     <br/>
