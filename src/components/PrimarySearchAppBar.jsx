@@ -83,11 +83,11 @@ export default function PrimarySearchAppBar({loginState}) {
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-    const [open, setOpen] = React.useState(false);
+    const [loginModalOpen, setLoginModalOpen] = React.useState(false);
     const [regModalopen, setRegModalOpen] = React.useState(false);
 
-    const openLoginModal = () => setOpen(true);
-    const closeLoginModal = () => setOpen(false);
+    const openLoginModal = () => setLoginModalOpen(true);
+    const closeLoginModal = () => setLoginModalOpen(false);
 
     const openRegModal = () => setRegModalOpen(true);
     const closeRegModal = () => setRegModalOpen(false);
@@ -310,7 +310,7 @@ export default function PrimarySearchAppBar({loginState}) {
             {renderMenu}
         </Box>
             <Modal
-                open={open}
+                open={loginModalOpen}
                 onClose={closeLoginModal}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"

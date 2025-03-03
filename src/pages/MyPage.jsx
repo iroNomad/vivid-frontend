@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {Button, Modal, Box, Typography, TextField, Input} from "@mui/material";
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import {useNavigate, useNavigation} from "react-router-dom";
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -35,6 +36,15 @@ export default function MyPage() {
     const [title, setTitle] = React.useState('');
     const [description, setDescription] = React.useState('');
     const [selectedFile, setSelectedFile] = useState(null);
+    const navigate = useNavigate();
+
+    console.log(localStorage.getItem("token"));
+    useEffect(() => {
+        if (!localStorage.getItem("token")) {
+            alert("로그인 후 마이페이지 접속 가능합니다.");
+            navigate("/"); // Redirect to home
+        }
+    }, [navigate]);
 
     // Handle file selection
     const handleFileChange = (event) => {
