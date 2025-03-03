@@ -37,10 +37,11 @@ export default function MyPage() {
     const [description, setDescription] = React.useState('');
     const [selectedFile, setSelectedFile] = useState(null);
     const navigate = useNavigate();
+    const [userData, setUserData] = useState(null);
+    const token = localStorage.getItem("token");
 
-    console.log(localStorage.getItem("token"));
     useEffect(() => {
-        if (!localStorage.getItem("token")) {
+        if (!token) {
             alert("로그인 후 마이페이지 접속 가능합니다.");
             navigate("/"); // Redirect to home
         }
@@ -51,9 +52,29 @@ export default function MyPage() {
         const file = event.target.files[0]; // Get the first selected file
         if (file) {
             setSelectedFile(file);
-            console.log("Selected file:", file);
         }
     };
+
+    // Fetch user info using token
+    useEffect(() => {
+        if (token) {
+            fetch("http://localhost:8080/mypage", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`, // Send token in headers
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch user data");
+                    }
+                    return response.json();
+                })
+                .then(data => setUserData(data))
+                .catch(error => console.error("Error fetching user data:", error));
+        }
+    }, [token]);
 
     // Handle file upload
     const handleUpload = async () => {
@@ -74,10 +95,8 @@ export default function MyPage() {
             });
 
             if (response.ok) {
-                const data = await response.json(); // Get the JSON response from backend
-
+                // const data = await response.json();
                 alert("영상 업로드 완료!");
-
                 handleClose(); // Close the modal after upload
             } else {
                 alert("영상 업로드 실패.");
@@ -144,7 +163,14 @@ export default function MyPage() {
                 </Box>
             </Modal>
             <h1>My Page</h1>
-            <p>This is the my page of my Vite React app.</p>
+            {userData ? (
+                <div>
+                    <p>Username: {userData.username}</p>
+                    <p>Joined: {new Date(userData.registrationDate).toLocaleDateString()}</p>
+                </div>
+            ) : (
+                <p>Loading user data...</p>
+            )}
         </div>
     );
 }

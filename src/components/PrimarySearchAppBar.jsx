@@ -73,8 +73,8 @@ const style = {
 export default function PrimarySearchAppBar({loginState}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-    const [userName, setUserName] = React.useState('');
-    const [password, setPassword] = React.useState('');
+    const [loginUserName, setLoginUserName] = React.useState('');
+    const [loginPassword, setLoginPassword] = React.useState('');
     const [regUserName, setRegUserName] = React.useState('');
     const [regPassword, setRegPassword] = React.useState('');
     const [regPasswordConfirm, setRegPasswordConfirm] = React.useState('');
@@ -92,7 +92,9 @@ export default function PrimarySearchAppBar({loginState}) {
     const openRegModal = () => setRegModalOpen(true);
     const closeRegModal = () => setRegModalOpen(false);
 
-    const handleRegister = () => {
+    const validateAndHandleRegister = (event) => {
+        event.preventDefault();
+
         // Username Validation
         if (regUserName.length < 4 || regUserName.length > 20) {
             alert("사용자 이름은 4자 이상 20자 이하여야 합니다.");
@@ -110,8 +112,8 @@ export default function PrimarySearchAppBar({loginState}) {
             return;
         }
 
-        if (regPassword.length < 8 || regPassword.length > 20) {
-            alert("비밀번호는 8자 이상 20자 이하여야 합니다.");
+        if (regPassword.length < 6 || regPassword.length > 20) {
+            alert("비밀번호는 6자 이상 20자 이하여야 합니다.");
             return;
         }
 
@@ -121,9 +123,40 @@ export default function PrimarySearchAppBar({loginState}) {
         }
 
         // Proceed with registration logic
-        alert("회원가입 성공!");
+        handleRegister(event);
     };
 
+    const handleRegister = async (event) => {
+        event.preventDefault();
+
+        try {
+            const response = await fetch("http://localhost:8080/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username: regUserName,
+                    password: regPassword,
+                }),
+            });
+
+            if (!response.ok) {
+                if (response.status === 400) {
+                    alert("이미 사용중인 사용자 이름입니다.");
+                    return;
+                }
+                throw new Error("회원가입 실패! 다시 시도해주세요.");
+            }
+
+            alert("회원가입 성공!");
+            closeRegModal();
+            openLoginModal();
+            setLoginUserName(regUserName);
+        } catch (error) {
+            setError && setError(error.message);
+        }
+    };
 
     const handleLogin = async (event) => {
         event.preventDefault(); // Prevents page reload
@@ -135,8 +168,8 @@ export default function PrimarySearchAppBar({loginState}) {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    username: userName, // Match the backend field names
-                    password: password,
+                    username: loginUserName, // Match the backend field names
+                    password: loginPassword,
                 }),
             });
 
@@ -326,8 +359,8 @@ export default function PrimarySearchAppBar({loginState}) {
                         variant="outlined"
                         fullWidth
                         required
-                        value={userName}
-                        onChange={(event) => setUserName(event.target.value)}
+                        value={loginUserName}
+                        onChange={(event) => setLoginUserName(event.target.value)}
                     />
                     <br/>
                     <br/>
@@ -337,14 +370,14 @@ export default function PrimarySearchAppBar({loginState}) {
                         variant="outlined"
                         fullWidth
                         required
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
+                        value={loginPassword}
+                        onChange={(event) => setLoginPassword(event.target.value)}
                     />
                     <br/>
                     <br/>
                     <Typography
                     >
-                        화원 아니신가요? <Button onClick={() => {
+                        회원 아니신가요? <Button onClick={() => {
                             closeLoginModal();
                             openRegModal();
                         }}>회원가입하기</Button>
