@@ -15,6 +15,7 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import { useNavigate } from 'react-router-dom';
 import Modal from '@mui/material/Modal';
 import {Button, TextField} from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 import {useState} from "react";
 
 const Search = styled('div')(({ theme }) => ({
@@ -70,7 +71,7 @@ const style = {
     color: 'black',
 };
 
-export default function PrimarySearchAppBar({loginState}) {
+export default function PrimarySearchAppBar({loginState, onSearch}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
     const [loginUserName, setLoginUserName] = React.useState('');
@@ -79,6 +80,7 @@ export default function PrimarySearchAppBar({loginState}) {
     const [regPassword, setRegPassword] = React.useState('');
     const [regPasswordConfirm, setRegPasswordConfirm] = React.useState('');
     const [error, setError] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
 
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -222,6 +224,20 @@ export default function PrimarySearchAppBar({loginState}) {
         setMobileMoreAnchorEl(event.currentTarget);
     };
 
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value);
+    };
+
+    const handleSearchSubmit = (event) => {
+        event.preventDefault();
+        onSearch(searchQuery);
+    };
+
+    const clearSearchInput = () => {
+        setSearchQuery("");
+        onSearch("");
+    }
+
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
         <Menu
@@ -278,70 +294,78 @@ export default function PrimarySearchAppBar({loginState}) {
 
     return (
         <>
-        <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="fixed" sx={{ width: '100%' }}>
-                <Toolbar>
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        sx={{ mr: 2 }}
-                        onClick={() => navigate("/")}
-                    >
-                        <HomeIcon />
-                    </IconButton>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="div"
-                        sx={{ display: { xs: 'none', sm: 'block' } }}
-                    >
-                        Vivid
-                    </Typography>
-                    <Search>
-                        <SearchIconWrapper>
-                            <SearchIcon />
-                        </SearchIconWrapper>
-                        <StyledInputBase
-                            placeholder="Search…"
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
-                    </Search>
-                    <Box sx={{ flexGrow: 1 }} />
-                    <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+            <Box sx={{ flexGrow: 1 }}>
+                <AppBar position="fixed" sx={{ width: '100%' }}>
+                    <Toolbar>
                         <IconButton
                             size="large"
-                            edge="end"
-                            aria-label="account of current user"
-                            aria-controls={menuId}
-                            aria-haspopup="true"
-                            onClick={(loginState == true) ? handleProfileMenuOpen : openLoginModal}
+                            edge="start"
                             color="inherit"
+                            aria-label="open drawer"
+                            sx={{ mr: 2 }}
+                            onClick={() => navigate("/")}
                         >
-                            <AccountCircle />
-                            <Typography variant="button" sx={{ display: 'block' }}>
-                                {(loginState == true) ? "마이 페이지" : "로그인"}
-                            </Typography>
+                            <HomeIcon />
                         </IconButton>
-                    </Box>
-                    <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                            size="large"
-                            aria-label="show more"
-                            aria-controls={mobileMenuId}
-                            aria-haspopup="true"
-                            onClick={handleMobileMenuOpen}
-                            color="inherit"
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="div"
+                            sx={{ display: { xs: 'none', sm: 'block' } }}
                         >
-                            <MoreIcon />
-                        </IconButton>
-                    </Box>
-                </Toolbar>
-            </AppBar>
-            {renderMobileMenu}
-            {renderMenu}
-        </Box>
+                            Vivid
+                        </Typography>
+                        <Box sx={{ flexGrow: 1 }} />
+                        <Search sx={{ minWidth: '40%', display: 'flex', alignItems: 'center' }}>
+                            <SearchIconWrapper>
+                                <SearchIcon />
+                            </SearchIconWrapper>
+                            <form onSubmit={handleSearchSubmit} style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                <StyledInputBase sx={{ width: '100%' }}
+                                    placeholder="Search…"
+                                    inputProps={{ 'aria-label': 'search' }}
+                                    value={searchQuery}
+                                    onChange={handleSearchChange}
+                                />
+                                <IconButton aria-label="delete" onClick={clearSearchInput} sx={{ color: 'white' }}>
+                                    <CloseIcon />
+                                </IconButton>
+                            </form>
+                        </Search>
+                        <Box sx={{ flexGrow: 1 }} />
+                        <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                            <IconButton
+                                size="large"
+                                edge="end"
+                                aria-label="account of current user"
+                                aria-controls={menuId}
+                                aria-haspopup="true"
+                                onClick={(loginState == true) ? handleProfileMenuOpen : openLoginModal}
+                                color="inherit"
+                            >
+                                <AccountCircle />
+                                <Typography variant="button" sx={{ display: 'block' }}>
+                                    {(loginState == true) ? "마이 페이지" : "로그인"}
+                                </Typography>
+                            </IconButton>
+                        </Box>
+                        <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+                            <IconButton
+                                size="large"
+                                aria-label="show more"
+                                aria-controls={mobileMenuId}
+                                aria-haspopup="true"
+                                onClick={handleMobileMenuOpen}
+                                color="inherit"
+                            >
+                                <MoreIcon />
+                            </IconButton>
+                        </Box>
+                    </Toolbar>
+                </AppBar>
+                {renderMobileMenu}
+                {renderMenu}
+            </Box>
             <Modal
                 open={loginModalOpen}
                 onClose={closeLoginModal}
@@ -378,9 +402,9 @@ export default function PrimarySearchAppBar({loginState}) {
                     <Typography
                     >
                         회원 아니신가요? <Button onClick={() => {
-                            closeLoginModal();
-                            openRegModal();
-                        }}>회원가입하기</Button>
+                        closeLoginModal();
+                        openRegModal();
+                    }}>회원가입하기</Button>
                     </Typography>
                     <br/>
                     <Button variant="contained" onClick={handleLogin}>로그인</Button>
@@ -439,7 +463,7 @@ export default function PrimarySearchAppBar({loginState}) {
                     }}>로그인하기</Button>
                     </Typography>
                     <br/>
-                    <Button variant="contained" onClick={handleRegister}>가입하기</Button>
+                    <Button variant="contained" onClick={validateAndHandleRegister}>가입하기</Button>
                 </Box>
             </Modal>
         </>
