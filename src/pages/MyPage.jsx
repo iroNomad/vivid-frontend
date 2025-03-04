@@ -91,6 +91,9 @@ export default function MyPage() {
         try {
             const response = await fetch("http://localhost:8080/upload", {
                 method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
                 body: formData,
             });
 
@@ -99,11 +102,12 @@ export default function MyPage() {
                 alert("영상 업로드 완료!");
                 handleClose(); // Close the modal after upload
             } else {
-                alert("영상 업로드 실패.");
+                // const errorData = await response.json();
+                alert(`영상 업로드 실패`);
             }
         } catch (error) {
             console.error("Error uploading video:", error);
-            alert("업로드 오류!");
+            alert("업로드 오류! 네트워크 문제일 수 있습니다.");
         }
     };
 

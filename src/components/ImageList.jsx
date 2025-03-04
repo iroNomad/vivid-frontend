@@ -31,7 +31,7 @@ export default function TitlebarBelowImageList({videos}) {
                             title={item.title}
                             subtitle={
                                 <>
-                                    {item.userId} <br />
+                                    {item.username} <br />
                                     {item.uploadDate}
                                 </>
                             }

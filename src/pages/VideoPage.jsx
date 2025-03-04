@@ -43,7 +43,7 @@ export default function VideoPage() {
                 Your browser does not support the video tag.
             </video>
             <h2>{video.title}</h2>
-            <h4>{video.userId}</h4>
+            <h4>{video.username}</h4>
             <p>{video.description}</p>
             <p>{video.uploadDate}</p>
         </div>
