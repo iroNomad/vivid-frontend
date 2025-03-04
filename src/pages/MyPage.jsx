@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {Button, Modal, Box, Typography, TextField, Input} from "@mui/material";
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import {useNavigate, useNavigation} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -36,6 +36,7 @@ export default function MyPage() {
     const [title, setTitle] = React.useState('');
     const [description, setDescription] = React.useState('');
     const [selectedFile, setSelectedFile] = useState(null);
+    const [isUploading, setIsUploading] = useState(false);
     const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
     const token = localStorage.getItem("token");
@@ -51,6 +52,13 @@ export default function MyPage() {
     const handleFileChange = (event) => {
         const file = event.target.files[0]; // Get the first selected file
         if (file) {
+            const validFormats = ['video/mp4', 'video/webm'];
+            if (!validFormats.includes(file.type)) {
+                alert("잘못된 파일 형식입니다. MP4 또는 WebM 비디오 파일을 선택하십시오.");
+                setSelectedFile(null); // Clear the selected file state
+                event.target.value = null;
+                return;
+            }
             setSelectedFile(file);
         }
     };
@@ -67,12 +75,12 @@ export default function MyPage() {
             })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error("Failed to fetch user data");
+                        throw new Error("사용자 데이터를 가져오지 못했습니다.");
                     }
                     return response.json();
                 })
                 .then(data => setUserData(data))
-                .catch(error => console.error("Error fetching user data:", error));
+                .catch(error => console.error("사용자 데이터 가져오기 오류:", error));
         }
     }, [token]);
 
@@ -82,6 +90,8 @@ export default function MyPage() {
             alert("영상 파일을 선택하십시오!");
             return;
         }
+
+        setIsUploading(true); // Set uploading state to true
 
         const formData = new FormData();
         formData.append("title", title);
@@ -98,22 +108,22 @@ export default function MyPage() {
             });
 
             if (response.ok) {
-                // const data = await response.json();
                 alert("영상 업로드 완료!");
                 handleClose(); // Close the modal after upload
             } else {
-                // const errorData = await response.json();
-                alert(`영상 업로드 실패`);
+                alert("영상 업로드 실패");
             }
         } catch (error) {
-            console.error("Error uploading video:", error);
+            console.error("영상 업로드 오류:", error);
             alert("업로드 오류! 네트워크 문제일 수 있습니다.");
+        } finally {
+            setIsUploading(false); // Reset uploading state
         }
     };
 
     return (
         <div>
-            <Button onClick={handleOpen}>Upload Video</Button>
+            <Button onClick={handleOpen}>비디오 업로드</Button>
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -122,7 +132,7 @@ export default function MyPage() {
             >
                 <Box sx={style}>
                     <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Upload Video
+                        비디오 업로드
                     </Typography>
                     <br/>
                     <Button
@@ -132,7 +142,7 @@ export default function MyPage() {
                         tabIndex={-1}
                         startIcon={<CloudUploadIcon />}
                     >
-                        Select video file
+                        비디오 파일 선택
                         <Input
                             type="file"
                             onChange={handleFileChange}
@@ -143,7 +153,7 @@ export default function MyPage() {
                     <br/>
                     <TextField
                         id="outlined-basic"
-                        label="Title"
+                        label="제목"
                         variant="outlined"
                         fullWidth
                         required
@@ -154,7 +164,7 @@ export default function MyPage() {
                     <br/>
                     <TextField
                         id="outlined-multiline-flexible"
-                        label="Description"
+                        label="설명"
                         multiline
                         maxRows={4}
                         fullWidth
@@ -163,17 +173,19 @@ export default function MyPage() {
                     />
                     <br/>
                     <br/>
-                    <Button variant="contained" onClick={handleUpload}>Done</Button>
+                    <Button variant="contained" onClick={handleUpload} disabled={isUploading}>
+                        {isUploading ? "업로드 중..." : "완료"}
+                    </Button>
                 </Box>
             </Modal>
-            <h1>My Page</h1>
+            <h1>마이 페이지</h1>
             {userData ? (
                 <div>
-                    <p>Username: {userData.username}</p>
-                    <p>Joined: {new Date(userData.registrationDate).toLocaleDateString()}</p>
+                    <p>사용자 이름: {userData.username}</p>
+                    <p>가입일: {new Date(userData.registrationDate).toLocaleDateString()}</p>
                 </div>
             ) : (
-                <p>Loading user data...</p>
+                <p>사용자 데이터 로딩 중...</p>
             )}
         </div>
     );

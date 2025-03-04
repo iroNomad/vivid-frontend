@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 export default function TitlebarBelowImageList({videos}) {
     return (
-        <ImageList sx={{ width: '100%', height: 'auto' }} cols={4} gap={12}>
+        <ImageList sx={{ width: '100%', height: 'auto', mt: 8 }} cols={4} gap={12}>
             {videos.map((item) => (
                 <Link
                     to={`/video/${item.videoId}`}
