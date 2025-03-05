@@ -5,6 +5,7 @@ import { Routes, Route } from 'react-router-dom';
 import MyPage from './pages/MyPage.jsx';
 import TitlebarImageList from "./components/ImageList.jsx";
 import VideoPage from "./pages/VideoPage.jsx";
+import {BASE_URL} from "./config.js";
 
 export default function App() {
     const [videos, setVideos] = useState([]);
@@ -32,7 +33,7 @@ export default function App() {
     useEffect(() => {
         const fetchVideos = async () => {
             try {
-                const response = await fetch('http://localhost:8080/allVideos');
+                const response = await fetch(BASE_URL + "/video/all");
                 if (!response.ok) {
                     throw new Error('Failed to fetch videos');
                 }

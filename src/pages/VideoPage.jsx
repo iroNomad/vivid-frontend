@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { Box, Typography } from '@mui/material';
+import CommentSection from '../components/CommentSection';
+import { BASE_URL } from "../config.js";
 
 export default function VideoPage() {
     const { videoId } = useParams(); // Get videoId from URL
@@ -10,7 +13,7 @@ export default function VideoPage() {
     useEffect(() => {
         const fetchVideo = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/video/${videoId}`);
+                const response = await fetch(BASE_URL + `/video/${videoId}`);
                 if (!response.ok) {
                     throw new Error(`Failed to fetch video (Status: ${response.status})`);
                 }
@@ -31,21 +34,22 @@ export default function VideoPage() {
     if (!video) return <p>Video not found.</p>;
 
     return (
-        <div>
+        <Box>
             <video
                 width="60%"
                 height="auto"
                 controls
-                // poster={video.thumbnailFileURL}
+                poster={video.thumbnailFileURL}
                 autoPlay={true}
             >
                 <source src={video.videoFileURL} type="video/mp4" /> {/* ✅ Uses correct API response field */}
                 Your browser does not support the video tag.
             </video>
-            <h2>{video.title}</h2>
-            <h4>{video.username}</h4>
-            <p>{video.description}</p>
-            <p>{video.uploadDate}</p>
-        </div>
+            <Typography variant="h4">{video.title}</Typography>
+            <Typography variant="subtitle1">{video.username}</Typography>
+            <Typography variant="body1">{video.description}</Typography>
+            <Typography variant="body2">{video.uploadDate}</Typography>
+            <CommentSection videoId={videoId} />
+        </Box>
     );
 }

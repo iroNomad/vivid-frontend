@@ -17,6 +17,7 @@ import Modal from '@mui/material/Modal';
 import {Button, TextField} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import {useState} from "react";
+import { BASE_URL } from '../config';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -132,7 +133,7 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
         event.preventDefault();
 
         try {
-            const response = await fetch("http://localhost:8080/register", {
+            const response = await fetch(BASE_URL + "/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -164,7 +165,7 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
         event.preventDefault(); // Prevents page reload
 
         try {
-            const response = await fetch("http://localhost:8080/login", {
+            const response = await fetch(BASE_URL + "/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

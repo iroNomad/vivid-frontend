@@ -3,6 +3,7 @@ import {Button, Modal, Box, Typography, TextField, Input} from "@mui/material";
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import {useNavigate} from "react-router-dom";
+import { BASE_URL } from '../config.js';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -66,7 +67,7 @@ export default function MyPage() {
     // Fetch user info using token
     useEffect(() => {
         if (token) {
-            fetch("http://localhost:8080/mypage", {
+            fetch(BASE_URL + "/mypage", {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`, // Send token in headers
@@ -99,7 +100,7 @@ export default function MyPage() {
         formData.append("video", selectedFile);
 
         try {
-            const response = await fetch("http://localhost:8080/upload", {
+            const response = await fetch(BASE_URL + "/video/upload", {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`,
