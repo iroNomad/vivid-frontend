@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import {Paper, Stack, Button, Modal, Box, Typography, TextField, Input, Container} from "@mui/material";
+import {Paper, Stack, Button, Modal, Box, Typography, TextField, Input, Container, Divider} from "@mui/material";
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import PersonOffIcon from '@mui/icons-material/PersonOff';
 import {useNavigate} from "react-router-dom";
 import { BASE_URL } from '../config.js';
 import withWidth from "@mui/material/Hidden/withWidth.js";
@@ -44,7 +45,7 @@ export default function MyPage() {
         if (file) {
             const validFormats = ['video/mp4', 'video/webm'];
             if (!validFormats.includes(file.type)) {
-                alert("잘못된 파일 형식입니다. MP4 또는 WebM 비디오 파일을 선택하십시오.");
+                alert("잘못된 파일 형식입니다. MP4 또는 WebM 영상 파일을 선택하십시오.");
                 setSelectedFile(null); // Clear the selected file state
                 event.target.value = null;
                 return;
@@ -134,19 +135,27 @@ export default function MyPage() {
                     alignItems: "stretch",
                 }}
             >
-                <Box sx={{
-                    bgcolor: 'grey',
-                }}>
+                <Box>
                     {userData ? (
-                        <Box sx={{textAlign: 'left', p: 2}}>
-                            <Typography>{userData.username}</Typography>
-                            <Typography>가입일: {new Date(userData.registrationDate).toLocaleDateString()}</Typography>
+                        <Box sx={{textAlign: 'left', p: 2, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                            <img src="https://images.unsplash.com/photo-1554692936-82776f9406db?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                style={{height: 'auto', width: '30%', aspectRatio: '1/1', objectFit: 'cover', borderRadius: '50%'}}
+                            />
+                            <Box sx={{ maxWidth: '60%', m: 5 }}>
+                                <Typography>{userData.username}</Typography>
+                                <Typography>가입일: {new Date(userData.registrationDate).toLocaleDateString()}</Typography>
+                                <br/>
+                                <Button variant="contained" startIcon={<CloudUploadIcon />} onClick={handleOpen}>영상 업로드</Button>
+                                <br/>
+                                <br/>
+                                <Button variant="outlined" startIcon={<PersonOffIcon />}>회원 탈퇴</Button>
+                            </Box>
                         </Box>
                     ) : (
                         <Typography>사용자 데이터 로딩 중...</Typography>
                     )}
-                    <Button onClick={handleOpen}>비디오 업로드</Button>
                 </Box>
+                {/*<Divider color={'white'}/>*/}
                 {userData && userData.videos.map((video) => (
                     <Box key={video.videoId} sx={{ border: 1, borderColor: 'grey', borderStyle: 'solid', display: 'flex', alignItems: 'center' }}>
                         <img src={video.thumbnailFileURL} alt={video.title} style={{ width: '40%', height: 'auto', marginRight: '16px' }} />
@@ -167,7 +176,7 @@ export default function MyPage() {
             >
                 <Box sx={style}>
                     <Typography id="modal-modal-title" variant="h6" component="h2">
-                        비디오 업로드
+                        영상 업로드
                     </Typography>
                     <br/>
                     <Button
@@ -175,14 +184,12 @@ export default function MyPage() {
                         role={undefined}
                         variant="contained"
                         tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
+                        // startIcon={<CloudUploadIcon />}
                     >
-                        비디오 파일 선택
-                        <Input
-                            type="file"
-                            onChange={handleFileChange}
-                            multiple
-                        />
+                        <Box display="flex" flexDirection="column">
+                            <Typography>파일 선택</Typography>
+                            <Input type="file" onChange={handleFileChange} multiple={false} />
+                        </Box>
                     </Button>
                     <br/>
                     <br/>
