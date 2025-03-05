@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {Button, Modal, Box, Typography, TextField, Input} from "@mui/material";
+import {Paper, Stack, Button, Modal, Box, Typography, TextField, Input, Container} from "@mui/material";
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import {useNavigate} from "react-router-dom";
 import { BASE_URL } from '../config.js';
+import withWidth from "@mui/material/Hidden/withWidth.js";
 
 const style = {
     position: 'absolute',
@@ -119,8 +120,45 @@ export default function MyPage() {
     };
 
     return (
-        <div>
-            <Button onClick={handleOpen}>비디오 업로드</Button>
+        <Container sx={{
+            mt: 10,
+            mb: 40,
+            width: "100vh",
+            height: "100vh",
+        }}>
+            <Stack
+                direction="column"
+                spacing={2}
+                sx={{
+                    justifyContent: "flex-start",
+                    alignItems: "stretch",
+                }}
+            >
+                <Box sx={{
+                    bgcolor: 'grey',
+                }}>
+                    {userData ? (
+                        <Box sx={{textAlign: 'left', p: 2}}>
+                            <Typography>{userData.username}</Typography>
+                            <Typography>가입일: {new Date(userData.registrationDate).toLocaleDateString()}</Typography>
+                        </Box>
+                    ) : (
+                        <Typography>사용자 데이터 로딩 중...</Typography>
+                    )}
+                    <Button onClick={handleOpen}>비디오 업로드</Button>
+                </Box>
+                {userData && userData.videos.map((video) => (
+                    <Box key={video.videoId} sx={{ border: 1, borderColor: 'grey', borderStyle: 'solid', display: 'flex', alignItems: 'center' }}>
+                        <img src={video.thumbnailFileURL} alt={video.title} style={{ width: '40%', height: 'auto', marginRight: '16px' }} />
+                        <Box sx={{textAlign: 'left'}}>
+                            <Typography variant="h6">{video.title}</Typography>
+                            <br/>
+                            <Typography variant="body2">{video.description}</Typography>
+                            <Typography variant="caption">{video.uploadDate}</Typography>
+                        </Box>
+                    </Box>
+                ))}
+            </Stack>
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -175,15 +213,6 @@ export default function MyPage() {
                     </Button>
                 </Box>
             </Modal>
-            <h1>마이 페이지</h1>
-            {userData ? (
-                <div>
-                    <p>사용자 이름: {userData.username}</p>
-                    <p>가입일: {new Date(userData.registrationDate).toLocaleDateString()}</p>
-                </div>
-            ) : (
-                <p>사용자 데이터 로딩 중...</p>
-            )}
-        </div>
+        </Container>
     );
 }
