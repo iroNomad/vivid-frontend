@@ -5,18 +5,6 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import {useNavigate} from "react-router-dom";
 import { BASE_URL } from '../config.js';
 
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-});
-
 const style = {
     position: 'absolute',
     top: '50%',
@@ -70,11 +58,14 @@ export default function MyPage() {
             fetch(BASE_URL + "/mypage", {
                 method: "GET",
                 headers: {
-                    "Authorization": `Bearer ${token}`, // Send token in headers
-                    "Content-Type": "application/json"
+                    "Authorization": `Bearer ${token}` // Send token in headers
                 }
             })
                 .then(response => {
+                    if (response.status === 401) {
+                        alert("토큰이 유효하지 않습니다. 다시 로그인해 주십시오.");
+                        logout(); // Call logout function on 401 error
+                    }
                     if (!response.ok) {
                         throw new Error("사용자 데이터를 가져오지 못했습니다.");
                     }
@@ -120,6 +111,11 @@ export default function MyPage() {
         } finally {
             setIsUploading(false); // Reset uploading state
         }
+    };
+
+    const logout = () => {
+        localStorage.removeItem("token"); // Remove token
+        window.location.href = "/"; // Redirect to main page
     };
 
     return (

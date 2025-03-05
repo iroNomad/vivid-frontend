@@ -304,7 +304,7 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
                             color="inherit"
                             aria-label="open drawer"
                             sx={{ mr: 2 }}
-                            onClick={() => navigate("/")}
+                            onClick={() => { navigate("/"); window.location.reload(); }}
                         >
                             <HomeIcon />
                         </IconButton>
