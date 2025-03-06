@@ -31,8 +31,8 @@ export default function MyPage() {
         img: ''
     });
     const [deleteConfirmModalOpen, setDeleteConfirmModalOpen] = React.useState(false);
-    const openDeleteComfirmModal = () => setDeleteConfirmModalOpen(true);
-    const closeDeleteComfirmModal = () => setDeleteConfirmModalOpen(false);
+    const openDeleteConfirmModal = () => setDeleteConfirmModalOpen(true);
+    const closeDeleteConfirmModal = () => setDeleteConfirmModalOpen(false);
     const [selectedVideo, setSelectedVideo] = useState(null);
 
 
@@ -199,7 +199,7 @@ export default function MyPage() {
                 throw new Error('Failed to delete video');
             }
             alert('영상이 삭제되었습니다.');
-            closeDeleteComfirmModal();
+            closeDeleteConfirmModal();
             window.location.reload();
         } catch (error) {
             console.log('Error deleting video:', error);
@@ -293,7 +293,7 @@ export default function MyPage() {
                             }}
                         >
                             <MenuItem onClick={() => { handleMenuClose(); openVideoEditModal(selectedVideo); }}>수정</MenuItem>
-                            <MenuItem onClick={() => { handleMenuClose(); openDeleteComfirmModal(selectedVideo); }}>삭제</MenuItem>
+                            <MenuItem onClick={() => { handleMenuClose(); openDeleteConfirmModal(selectedVideo); }}>삭제</MenuItem>
                         </Menu>
                     </Box>
                 ))}
@@ -397,7 +397,7 @@ export default function MyPage() {
             </Modal>
             <Modal
                 open={deleteConfirmModalOpen}
-                onClose={closeDeleteComfirmModal}
+                onClose={closeDeleteConfirmModal}
                 aria-labelledby="videoEditModal"
             >
             <Box sx={style}>
@@ -413,7 +413,7 @@ export default function MyPage() {
                 </Button>
                 <Button
                     variant="outlined"
-                    onClick={() => closeDeleteComfirmModal()}
+                    onClick={() => closeDeleteConfirmModal()}
                     disabled={isDeleting}
                 >
                     아니오

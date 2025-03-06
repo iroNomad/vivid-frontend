@@ -177,12 +177,12 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
             });
 
             if (response.status === 401) {
-                alert("아이디 또는 비밀번호가 잘못되었습니다."); // Show error in UI
+                alert("이름 또는 비밀번호가 잘못되었습니다."); // Show error in UI
                 return;
             }
 
             if (!response.ok) {
-                throw new Error("로그인 실패! 아이디 또는 비밀번호를 확인하세요.");
+                throw new Error("로그인 실패! 이름 또는 비밀번호를 확인하세요.");
             }
 
             const data = await response.json();
@@ -370,17 +370,16 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
             <Modal
                 open={loginModalOpen}
                 onClose={closeLoginModal}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
+                aria-labelledby="loginModal"
             >
                 <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                    <Typography id="loginModal" variant="h6" component="h2">
                         회원 로그인
                     </Typography>
                     <br/>
                     <TextField
                         id="outlined-basic"
-                        label="사용자 아이디"
+                        label="사용자 이름"
                         variant="outlined"
                         fullWidth
                         required
@@ -415,17 +414,18 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
             <Modal
                 open={regModalopen}
                 onClose={closeRegModal}
-                aria-labelledby="modal-modal-title"
+                aria-labelledby="loginModal"
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
                     <Typography id="modal-modal-title" variant="h6" component="h2">
                         회원가입
                     </Typography>
+                    <img />
                     <br/>
                     <TextField
                         id="outlined-basic"
-                        label="새 사용자 아이디"
+                        label="새 사용자 이름"
                         variant="outlined"
                         fullWidth
                         required
