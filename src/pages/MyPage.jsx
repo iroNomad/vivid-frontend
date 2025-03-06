@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {Paper, Stack, Button, Modal, Box, Typography, TextField, Input, Container, Divider} from "@mui/material";
-import { styled } from '@mui/material/styles';
+import {Stack, Button, Modal, Box, Typography, TextField, Input, Container, Menu, MenuItem} from "@mui/material";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import PersonOffIcon from '@mui/icons-material/PersonOff';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import {useNavigate} from "react-router-dom";
 import { BASE_URL } from '../config.js';
-import withWidth from "@mui/material/Hidden/withWidth.js";
 
 const style = {
     position: 'absolute',
@@ -21,16 +20,49 @@ const style = {
 };
 
 export default function MyPage() {
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const [uploadModalOpen, setUploadModalOpen] = React.useState(false);
+    const openUploadModal = () => setUploadModalOpen(true);
+    const closeUploadModal = () => setUploadModalOpen(false);
+    const [videoEditModalOpen, setVideoEditModalOpen] = React.useState(false);
+    const [videoForEditing, setVideoForEditing] = useState({
+        id: 0,
+        title: '',
+        description: '',
+        img: ''
+    });
+    const [selectedVideo, setSelectedVideo] = useState(null);
+    const handleMenuClick = (event, video) => {
+        setAnchorEl(event.currentTarget);
+        setSelectedVideo(video);
+    };
+
+    const openVideoEditModal = (video) => {
+        setVideoEditModalOpen(true);
+        setVideoForEditing({
+            videoId: video.videoId,
+            title: video.title,
+            description: video.description,
+            img: video.thumbnailFileURL
+        });
+    };
+
+    const closeVideoEditModal = () => setVideoEditModalOpen(false);
+
     const [title, setTitle] = React.useState('');
     const [description, setDescription] = React.useState('');
     const [selectedFile, setSelectedFile] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
     const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
     const token = localStorage.getItem("token");
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const menuOpen = Boolean(anchorEl);
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
 
     useEffect(() => {
         if (!token) {
@@ -103,7 +135,7 @@ export default function MyPage() {
 
             if (response.ok) {
                 alert("영상 업로드 완료!");
-                handleClose(); // Close the modal after upload
+                closeUploadModal(); // Close the modal after upload
             } else {
                 alert("영상 업로드 실패");
             }
@@ -112,6 +144,37 @@ export default function MyPage() {
             alert("업로드 오류! 네트워크 문제일 수 있습니다.");
         } finally {
             setIsUploading(false); // Reset uploading state
+        }
+    };
+
+    const handleVideoEdit = async (video) => {
+
+        setIsEditing(true);
+        try {
+            const response = await fetch(`${BASE_URL}/video/update/${video.videoId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    title: video.title,
+                    description: video.description
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update video');
+            }
+
+            alert('영상이 수정되었습니다.');
+            closeVideoEditModal();
+            window.location.reload();
+        } catch (error) {
+            console.error('Error updating video:', error);
+            alert('영상 수정에 실패했습니다.');
+        } finally {
+            setIsEditing(false);
         }
     };
 
@@ -145,7 +208,7 @@ export default function MyPage() {
                                 <Typography>{userData.username}</Typography>
                                 <Typography>가입일: {new Date(userData.registrationDate).toLocaleDateString()}</Typography>
                                 <br/>
-                                <Button variant="contained" startIcon={<CloudUploadIcon />} onClick={handleOpen}>영상 업로드</Button>
+
                                 <br/>
                                 <br/>
                                 <Button variant="outlined" startIcon={<PersonOffIcon />}>회원 탈퇴</Button>
@@ -155,22 +218,58 @@ export default function MyPage() {
                         <Typography>사용자 데이터 로딩 중...</Typography>
                     )}
                 </Box>
-                {/*<Divider color={'white'}/>*/}
+                <Button
+                    sx={{
+                        height: '10vh',
+                        fontSize: '1.5rem',
+                        '& .MuiSvgIcon-root': {
+                            fontSize: '2.5rem'
+                        }
+                    }}
+                    size="large"
+                    variant="contained"
+                    startIcon={<CloudUploadIcon />}
+                    onClick={openUploadModal}>
+                    영상 업로드
+                </Button>
                 {userData && userData.videos.map((video) => (
                     <Box key={video.videoId} sx={{ border: 1, borderColor: 'grey', borderStyle: 'solid', display: 'flex', alignItems: 'center' }}>
-                        <img src={video.thumbnailFileURL} alt={video.title} style={{ width: '40%', height: 'auto', marginRight: '16px' }} />
-                        <Box sx={{textAlign: 'left'}}>
+                        <img src={video.thumbnailFileURL} alt={video.title} style={{ width: '40%', height: 'auto'}} />
+                        <Box sx={{textAlign: 'left', width: '40%', p: 2}}>
                             <Typography variant="h6">{video.title}</Typography>
                             <br/>
                             <Typography variant="body2">{video.description}</Typography>
                             <Typography variant="caption">{video.uploadDate}</Typography>
                         </Box>
+                        <Button
+                            sx={{mt: 1, mr: 1, mb: 'auto', ml: 'auto'}}
+                            aria-label="edit"
+                            color="inherit"
+                            id="basic-button"
+                            aria-controls={menuOpen ? 'basic-menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={menuOpen ? 'true' : undefined}
+                            onClick={(event) => handleMenuClick(event, video)}>
+                            <MoreHorizIcon/>
+                        </Button>
+                        <Menu
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={menuOpen}
+                            onClose={handleMenuClose}
+                            MenuListProps={{
+                                'aria-labelledby': 'basic-button',
+                            }}
+                        >
+                            <MenuItem onClick={() => { handleMenuClose(); openVideoEditModal(selectedVideo); }}>수정</MenuItem>
+                            <MenuItem onClick={handleMenuClose}>삭제</MenuItem>
+                        </Menu>
                     </Box>
                 ))}
             </Stack>
             <Modal
-                open={open}
-                onClose={handleClose}
+                open={uploadModalOpen}
+                onClose={closeUploadModal}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
@@ -217,6 +316,53 @@ export default function MyPage() {
                     <br/>
                     <Button variant="contained" onClick={handleUpload} disabled={isUploading}>
                         {isUploading ? "업로드 중..." : "완료"}
+                    </Button>
+                </Box>
+            </Modal>
+            <Modal
+                open={videoEditModalOpen}
+                onClose={closeVideoEditModal}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                        정보 수정
+                    </Typography>
+                    <br/>
+                    <img src={videoForEditing.img} width={"100%"} alt={videoForEditing.title} />
+                    <br/>
+                    <br/>
+                    <TextField
+                        id="outlined-basic"
+                        label="제목"
+                        variant="outlined"
+                        fullWidth
+                        required
+                        value={videoForEditing.title}
+                        onChange={(event) => setVideoForEditing({
+                            ...videoForEditing,
+                            title: event.target.value
+                        })}
+                    />
+                    <br/>
+                    <br/>
+                    <TextField
+                        id="outlined-multiline-flexible"
+                        label="설명"
+                        multiline
+                        maxRows={4}
+                        fullWidth
+                        value={videoForEditing.description}
+                        onChange={(event) => setVideoForEditing({
+                            ...videoForEditing,
+                            description: event.target.value
+                        })}
+                    />
+                    <br/>
+                    <br/>
+                    <Button variant="contained" onClick={() => handleVideoEdit(videoForEditing)} disabled={isUploading}>
+                        {isEditing ? "수정 중..." : "수정하기"}
                     </Button>
                 </Box>
             </Modal>
