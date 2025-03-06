@@ -30,7 +30,12 @@ export default function MyPage() {
         description: '',
         img: ''
     });
+    const [deleteConfirmModalOpen, setDeleteConfirmModalOpen] = React.useState(false);
+    const openDeleteComfirmModal = () => setDeleteConfirmModalOpen(true);
+    const closeDeleteComfirmModal = () => setDeleteConfirmModalOpen(false);
     const [selectedVideo, setSelectedVideo] = useState(null);
+
+
     const handleMenuClick = (event, video) => {
         setAnchorEl(event.currentTarget);
         setSelectedVideo(video);
@@ -53,6 +58,7 @@ export default function MyPage() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
     const token = localStorage.getItem("token");
@@ -178,6 +184,31 @@ export default function MyPage() {
         }
     };
 
+    const handleVideoDelete = async (video) => {
+        setIsDeleting(true);
+        console.log(token);
+        try {
+            const response = await fetch(`${BASE_URL}/video/delete/${video.videoId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete video');
+            }
+            alert('영상이 삭제되었습니다.');
+            closeDeleteComfirmModal();
+            window.location.reload();
+        } catch (error) {
+            console.log('Error deleting video:', error);
+            alert('영상 삭제에 실패했습니다.');
+        } finally {
+            setIsDeleting(false);
+        }
+    }
+
     const logout = () => {
         localStorage.removeItem("token"); // Remove token
         window.location.href = "/"; // Redirect to main page
@@ -262,7 +293,7 @@ export default function MyPage() {
                             }}
                         >
                             <MenuItem onClick={() => { handleMenuClose(); openVideoEditModal(selectedVideo); }}>수정</MenuItem>
-                            <MenuItem onClick={handleMenuClose}>삭제</MenuItem>
+                            <MenuItem onClick={() => { handleMenuClose(); openDeleteComfirmModal(selectedVideo); }}>삭제</MenuItem>
                         </Menu>
                     </Box>
                 ))}
@@ -270,8 +301,7 @@ export default function MyPage() {
             <Modal
                 open={uploadModalOpen}
                 onClose={closeUploadModal}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
+                aria-labelledby="videoUploadModal"
             >
                 <Box sx={style}>
                     <Typography id="modal-modal-title" variant="h6" component="h2">
@@ -322,8 +352,7 @@ export default function MyPage() {
             <Modal
                 open={videoEditModalOpen}
                 onClose={closeVideoEditModal}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
+                aria-labelledby="videoEditModal"
             >
                 <Box sx={style}>
                     <Typography id="modal-modal-title" variant="h6" component="h2">
@@ -365,6 +394,31 @@ export default function MyPage() {
                         {isEditing ? "수정 중..." : "수정하기"}
                     </Button>
                 </Box>
+            </Modal>
+            <Modal
+                open={deleteConfirmModalOpen}
+                onClose={closeDeleteComfirmModal}
+                aria-labelledby="videoEditModal"
+            >
+            <Box sx={style}>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                    영상 정말 삭제하시겠습니다?
+                </Typography>
+                <Button
+                    variant="contained"
+                    onClick={() => handleVideoDelete(selectedVideo)}
+                    disabled={isDeleting}
+                >
+                    예
+                </Button>
+                <Button
+                    variant="outlined"
+                    onClick={() => closeDeleteComfirmModal()}
+                    disabled={isDeleting}
+                >
+                    아니오
+                </Button>
+            </Box>
             </Modal>
         </Container>
     );
