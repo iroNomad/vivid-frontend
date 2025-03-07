@@ -256,8 +256,8 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={() => handleMenuClose("/mypage")}>My Page</MenuItem>
-            <MenuItem onClick={() => logout()}>Logout</MenuItem>
+            <MenuItem onClick={() => handleMenuClose("/mypage")}>마이 페이지</MenuItem>
+            <MenuItem onClick={() => logout()}>로그아웃</MenuItem>
         </Menu>
     );
 
@@ -346,7 +346,7 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
                             >
                                 <AccountCircle />
                                 <Typography variant="button" sx={{ display: 'block' }}>
-                                    {(loginState == true) ? "마이 페이지" : "로그인"}
+                                    {(loginState == true) ? "프로필" : "로그인"}
                                 </Typography>
                             </IconButton>
                         </Box>

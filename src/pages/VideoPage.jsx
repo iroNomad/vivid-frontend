@@ -34,9 +34,13 @@ export default function VideoPage() {
     if (!video) return <p>Video not found.</p>;
 
     return (
-        <Box>
+        <Box sx={{
+            margin: 'auto',
+            width: '60%',
+            mt: 8
+        }}>
             <video
-                width="60%"
+                width="100%"
                 height="auto"
                 controls
                 poster={video.thumbnailFileURL}
@@ -45,11 +49,17 @@ export default function VideoPage() {
                 <source src={video.videoFileURL} type="video/mp4" /> {/* ✅ Uses correct API response field */}
                 Your browser does not support the video tag.
             </video>
-            <Typography variant="h4">{video.title}</Typography>
-            <Typography variant="subtitle1">{video.username}</Typography>
-            <Typography variant="body1">{video.description}</Typography>
-            <Typography variant="body2">{video.uploadDate}</Typography>
-            <CommentSection videoId={videoId} />
+            <Box sx={{
+                mt: 2,
+                display: 'flex',
+                flexDirection: 'column',
+                textAlign: 'left',
+                gap: 2,
+            }}>
+                <Typography variant="h4">{video.title}</Typography>
+                <Typography variant="subtitle1">{video.username} - {video.uploadDate}</Typography>
+                <Typography variant="body1">{video.description}</Typography>
+            </Box>
         </Box>
     );
 }

@@ -232,17 +232,13 @@ export default function MyPage() {
                 <Box>
                     {userData ? (
                         <Box sx={{textAlign: 'left', p: 2, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                            <img src="https://images.unsplash.com/photo-1554692936-82776f9406db?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                            <img src="https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_6.png"
                                 style={{height: 'auto', width: '30%', aspectRatio: '1/1', objectFit: 'cover', borderRadius: '50%'}}
                             />
                             <Box sx={{ maxWidth: '60%', m: 5 }}>
-                                <Typography>{userData.username}</Typography>
-                                <Typography>가입일: {new Date(userData.registrationDate).toLocaleDateString()}</Typography>
+                                <Typography fontSize="2rem">{userData.username}</Typography>
+                                <Typography>가입일: {new Date(userData.registrationDate).toLocaleDateString('ko-KR', { year: '2-digit', month: 'long', day: 'numeric' })}</Typography>
                                 <br/>
-
-                                <br/>
-                                <br/>
-                                <Button variant="outlined" startIcon={<PersonOffIcon />}>회원 탈퇴</Button>
                             </Box>
                         </Box>
                     ) : (
@@ -269,7 +265,7 @@ export default function MyPage() {
                         <Box sx={{textAlign: 'left', width: '40%', p: 2}}>
                             <Typography variant="h6">{video.title}</Typography>
                             <br/>
-                            <Typography variant="body2">{video.description}</Typography>
+                            <Typography variant="body2" noWrap sx={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{video.description}</Typography>
                             <Typography variant="caption">{video.uploadDate}</Typography>
                         </Box>
                         <Button
