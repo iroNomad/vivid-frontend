@@ -418,10 +418,13 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                    <Typography id="modal-modal-title" variant="h6" component="h2" align="center">
                         회원가입
                     </Typography>
-                    <img />
+                    <br/>
+                    <img
+                        style={{maxWidth: '30%', borderRadius: '50%', display: 'block', margin: 'auto'}}
+                        src="https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_6.png"/>
                     <br/>
                     <TextField
                         id="outlined-basic"
@@ -464,7 +467,10 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
                     }}>로그인하기</Button>
                     </Typography>
                     <br/>
-                    <Button variant="contained" onClick={validateAndHandleRegister}>가입하기</Button>
+                    <Button
+                        style={{display: 'block', margin: 'auto'}}
+                        variant="contained"
+                        onClick={validateAndHandleRegister}>가입하기</Button>
                 </Box>
             </Modal>
         </>
