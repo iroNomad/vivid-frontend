@@ -18,6 +18,8 @@ import {Button, TextField} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import {useState} from "react";
 import { BASE_URL } from '../config';
+import ImageList from "@mui/material/ImageList";
+import ImageListItem from "@mui/material/ImageListItem";
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -88,12 +90,55 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
 
     const [loginModalOpen, setLoginModalOpen] = React.useState(false);
     const [regModalopen, setRegModalOpen] = React.useState(false);
+    const [proImgModalOpen, setProImgModalOpen] = React.useState(false);
 
     const openLoginModal = () => setLoginModalOpen(true);
     const closeLoginModal = () => setLoginModalOpen(false);
 
     const openRegModal = () => setRegModalOpen(true);
     const closeRegModal = () => setRegModalOpen(false);
+
+    const openProImgModal = () => setProImgModalOpen(true);
+    const closeProImgModal = () => setProImgModalOpen(false);
+
+    const itemData = [
+        {
+            img: 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_4.png',
+            title: 'Breakfast',
+        },
+        {
+            img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
+            title: 'Burger',
+        },
+        {
+            img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
+            title: 'Camera',
+        },
+        {
+            img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
+            title: 'Coffee',
+        },
+        {
+            img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
+            title: 'Hats',
+        },
+        {
+            img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
+            title: 'Honey',
+        },
+        {
+            img: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6',
+            title: 'Basketball',
+        },
+        {
+            img: 'https://images.unsplash.com/photo-1518756131217-31eb79b20e8f',
+            title: 'Fern',
+        },
+        {
+            img: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
+            title: 'Mushrooms',
+        },
+    ];
 
     const validateAndHandleRegister = (event) => {
         event.preventDefault();
@@ -423,8 +468,12 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
                     </Typography>
                     <br/>
                     <img
-                        style={{maxWidth: '30%', borderRadius: '50%', display: 'block', margin: 'auto'}}
-                        src="https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_6.png"/>
+                        style={{maxWidth: '30%', borderRadius: '50%', display: 'block', margin: 'auto', cursor: 'pointer'}}
+                        src="https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_6.png"
+                        onClick={() => openProImgModal()}
+                        onMouseEnter={(e) => { e.target.style.outline = '3px solid black' }}
+                        onMouseLeave={(e) => { e.target.style.outline = 'none' }}
+                    />
                     <br/>
                     <TextField
                         id="outlined-basic"
@@ -472,6 +521,32 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
                         variant="contained"
                         onClick={validateAndHandleRegister}>가입하기</Button>
                 </Box>
+            </Modal>
+
+            <Modal
+                open={proImgModalOpen}
+                onClose={closeProImgModal}
+                aria-labelledby="profileImageModal"
+            >
+                <ImageList sx={{ position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    bgcolor: 'background.paper',
+                    p: 1,
+                    color: 'black',}} cols={3} gap={8}>
+                    {itemData.map((item) => (
+                        <ImageListItem key={item.img}>
+                            <img
+                                srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                                src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
+                                alt={item.title}
+                                onMouseEnter={(e) => { e.target.style.outline = '3px solid black' }}
+                                onMouseLeave={(e) => { e.target.style.outline = 'none' }}
+                            />
+                        </ImageListItem>
+                    ))}
+                </ImageList>
             </Modal>
         </>
     );
