@@ -18,8 +18,8 @@ import {Button, TextField} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import {useState} from "react";
 import { BASE_URL } from '../config';
-import ImageList from "@mui/material/ImageList";
-import ImageListItem from "@mui/material/ImageListItem";
+import {ImageListItem, ImageList} from "@mui/material";
+import { ImageUrls } from '../assets/profileImg.js';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -82,6 +82,7 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
     const [regUserName, setRegUserName] = React.useState('');
     const [regPassword, setRegPassword] = React.useState('');
     const [regPasswordConfirm, setRegPasswordConfirm] = React.useState('');
+    const [proImg, setProImg] = React.useState(0);
     const [error, setError] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -100,45 +101,6 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
 
     const openProImgModal = () => setProImgModalOpen(true);
     const closeProImgModal = () => setProImgModalOpen(false);
-
-    const itemData = [
-        {
-            img: 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_4.png',
-            title: 'Breakfast',
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
-            title: 'Burger',
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
-            title: 'Camera',
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
-            title: 'Coffee',
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
-            title: 'Hats',
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
-            title: 'Honey',
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6',
-            title: 'Basketball',
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1518756131217-31eb79b20e8f',
-            title: 'Fern',
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
-            title: 'Mushrooms',
-        },
-    ];
 
     const validateAndHandleRegister = (event) => {
         event.preventDefault();
@@ -186,6 +148,7 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
                 body: JSON.stringify({
                     username: regUserName,
                     password: regPassword,
+                    avatarCode: proImg,
                 }),
             });
 
@@ -418,7 +381,7 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
                 aria-labelledby="loginModal"
             >
                 <Box sx={style}>
-                    <Typography id="loginModal" variant="h6" component="h2">
+                    <Typography id="loginModal" variant="h6" component="h2" align='center' fontWeight="bold">
                         회원 로그인
                     </Typography>
                     <br/>
@@ -434,6 +397,7 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
                     <br/>
                     <br/>
                     <TextField
+                        type="password"
                         id="outlined-basic"
                         label="비밀번호"
                         variant="outlined"
@@ -445,6 +409,7 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
                     <br/>
                     <br/>
                     <Typography
+                        align="center"
                     >
                         회원 아니신가요? <Button onClick={() => {
                         closeLoginModal();
@@ -452,7 +417,7 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
                     }}>회원가입하기</Button>
                     </Typography>
                     <br/>
-                    <Button variant="contained" onClick={handleLogin}>로그인</Button>
+                    <Button style={{display: "block", margin: 'auto'}} variant="contained" onClick={handleLogin}>로그인</Button>
                 </Box>
             </Modal>
 
@@ -463,13 +428,13 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2" align="center">
-                        회원가입
+                    <Typography id="modal-modal-title" variant="h6" component="h2" align="center" fontWeight="bold">
+                        회원 가입
                     </Typography>
                     <br/>
                     <img
-                        style={{maxWidth: '30%', borderRadius: '50%', display: 'block', margin: 'auto', cursor: 'pointer'}}
-                        src="https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_6.png"
+                        style={{maxWidth: 130, aspectRatio: '1/1', objectFit: "cover", borderRadius: '50%', display: 'block', margin: 'auto', cursor: 'pointer'}}
+                        src={ImageUrls[proImg]}
                         onClick={() => openProImgModal()}
                         onMouseEnter={(e) => { e.target.style.outline = '3px solid black' }}
                         onMouseLeave={(e) => { e.target.style.outline = 'none' }}
@@ -487,6 +452,7 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
                     <br/>
                     <br/>
                     <TextField
+                        type="password"
                         id="outlined-basic"
                         label="새 비밀번호"
                         variant="outlined"
@@ -509,6 +475,7 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
                     <br/>
                     <br/>
                     <Typography
+                        align="center"
                     >
                         이미 가입하셨나요? <Button onClick={() => {
                         closeRegModal();
@@ -535,14 +502,19 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
                     bgcolor: 'background.paper',
                     p: 1,
                     color: 'black',}} cols={3} gap={8}>
-                    {itemData.map((item) => (
-                        <ImageListItem key={item.img}>
+                    {(ImageUrls).map((item, index) => (
+                        <ImageListItem key={index}>
                             <img
-                                srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                                src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-                                alt={item.title}
-                                onMouseEnter={(e) => { e.target.style.outline = '3px solid black' }}
-                                onMouseLeave={(e) => { e.target.style.outline = 'none' }}
+                                style={{ cursor: 'pointer' }}
+                                srcSet={`${item}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                                src={`${item}?w=164&h=164&fit=crop&auto=format`}
+                                alt={`Avatar ${index + 1}`}
+                                onMouseEnter={(e) => { e.target.style.outline = '3px solid black'; }}
+                                onMouseLeave={(e) => { e.target.style.outline = 'none'; }}
+                                onClick={() => {
+                                    setProImg(index); // Use index directly
+                                    closeProImgModal();
+                                }}
                             />
                         </ImageListItem>
                     ))}

@@ -5,6 +5,7 @@ import PersonOffIcon from '@mui/icons-material/PersonOff';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import {useNavigate} from "react-router-dom";
 import { BASE_URL } from '../config.js';
+import { ImageUrls } from "../assets/profileImg.js";
 
 const style = {
     position: 'absolute',
@@ -232,8 +233,8 @@ export default function MyPage() {
                 <Box>
                     {userData ? (
                         <Box sx={{textAlign: 'left', p: 2, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                            <img src="https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_6.png"
-                                style={{height: 'auto', width: '30%', aspectRatio: '1/1', objectFit: 'cover', borderRadius: '50%'}}
+                            <img src={ImageUrls[userData.avatarCode]}
+                                style={{height: 'auto', maxWidth: 150, aspectRatio: '1/1', objectFit: 'cover', borderRadius: '50%'}}
                             />
                             <Box sx={{ maxWidth: '60%', m: 5 }}>
                                 <Typography fontSize="2rem">{userData.username}</Typography>
