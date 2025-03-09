@@ -8,7 +8,13 @@ import Box from '@mui/material/Box';
 
 export default function TitlebarBelowImageList({videos}) {
     return (
-        <ImageList sx={{ width: '100%', height: 'auto', mt: 8, }} cols={3} gap={32}>
+        <ImageList sx={{
+            width: '80%',
+            top: '5rem',
+            position: 'absolute',
+            transform: 'translateX(-50%)',
+        }}
+                   cols={3} gap={32}>
             {videos.map((item) => (
                 <Link
                     to={`/video/${item.videoId}`}

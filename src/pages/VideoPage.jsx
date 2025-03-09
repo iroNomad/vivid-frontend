@@ -35,9 +35,9 @@ export default function VideoPage() {
 
     return (
         <Box sx={{
-            margin: 'auto',
-            width: '60%',
-            mt: 8
+            position: 'absolute',
+            top: '5rem',
+            transform: 'translate(-50%)',
         }}>
             <video
                 width="100%"
