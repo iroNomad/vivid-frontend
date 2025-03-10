@@ -239,6 +239,7 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
 
     const handleSearchSubmit = (event) => {
         event.preventDefault();
+        navigate("/");
         onSearch(searchQuery);
     };
 

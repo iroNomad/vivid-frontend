@@ -6,6 +6,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import {useNavigate} from "react-router-dom";
 import { BASE_URL } from '../config.js';
 import { ImageUrls } from "../assets/profileImg.js";
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
 const style = {
     position: 'absolute',
@@ -143,8 +144,11 @@ export default function MyPage() {
             if (response.ok) {
                 alert("영상 업로드 완료!");
                 closeUploadModal(); // Close the modal after upload
+                window.location.reload();
             } else {
-                alert("영상 업로드 실패");
+                const errorText = await response.text();
+                alert(`영상 업로드 실패: ${errorText}`);
+                console.log(response);
             }
         } catch (error) {
             console.error("영상 업로드 오류:", error);
@@ -218,8 +222,8 @@ export default function MyPage() {
     return (
         <Container sx={{
             mt: 10,
-            mb: 40,
-            width: "100vh",
+            mb: 50,
+            width: "120vh",
             height: "100vh",
         }}>
             <Stack
@@ -262,8 +266,43 @@ export default function MyPage() {
                 </Button>
                 {userData && userData.videos.map((video) => (
                     <Box key={video.videoId} sx={{ border: 1, borderColor: 'grey', borderStyle: 'solid', display: 'flex', alignItems: 'center' }}>
-                        <img src={video.thumbnailFileURL} alt={video.title} style={{ width: '40%', height: 'auto'}} />
-                        <Box sx={{textAlign: 'left', width: '40%', p: 2}}>
+                        <Box sx={{
+                            position: 'relative',
+                            '&:hover .overlay': {
+                                opacity: 1
+                            }
+                        }}>
+                            <img
+                                src={video.thumbnailFileURL}
+                                alt={video.title}
+                                style={{
+                                    width: 'auto',
+                                    height: '100%',
+                                    display: 'block'
+                                }}
+                            />
+                            <Box
+                                className="overlay"
+                                sx={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    width: '100%',
+                                    height: '100%',
+                                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    opacity: 0,
+                                    transition: 'opacity',
+                                    cursor: 'pointer'
+                                }}
+                                onClick={() => navigate(`/video/${video.videoId}`)}
+                            >
+                                <PlayArrowIcon sx={{ color: 'white', fontSize: 48 }} />
+                            </Box>
+                        </Box>
+                        <Box sx={{textAlign: 'left', width: '50%', p: 2}}>
                             <Typography variant="h6">{video.title}</Typography>
                             <br/>
                             <Typography variant="body2" noWrap sx={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{video.description}</Typography>

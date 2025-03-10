@@ -1,10 +1,12 @@
-import * as React from 'react';
+// import * as React from 'react';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 import { Link } from 'react-router-dom';
 import Typography from "@mui/material/Typography";
 import Box from '@mui/material/Box';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { formatUploadDate } from './formatUploadDate.jsx';
 
 export default function TitlebarBelowImageList({videos}) {
     return (
@@ -27,26 +29,54 @@ export default function TitlebarBelowImageList({videos}) {
                 >
                     <ImageListItem
                         key={item.img}
+                        sx={{
+                            position: 'relative',
+                            '&:hover .overlay': {
+                                opacity: 1
+                            }
+                        }}
                     >
-                        <img
-                            src={item.thumbnailFileURL}
-                            alt={item.title}
-                            loading="lazy"
-                            style={{
-                                width: '100%',
-                                aspectRatio: '16 / 9',
-                                borderRadius: '10px'
-                            }}
-                        />
+                        <Box position="relative">
+                            <img
+                                src={item.thumbnailFileURL}
+                                alt={item.title}
+                                loading="lazy"
+                                style={{
+                                    width: '100%',
+                                    aspectRatio: '16 / 9',
+                                    borderRadius: '10px',
+                                    display: 'block'
+                                }}
+                            />
+                            <Box
+                                className="overlay"
+                                sx={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    width: '100%',
+                                    height: '100%',
+                                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    opacity: 0,
+                                    transition: 'opacity',
+                                    borderRadius: '10px',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                <PlayArrowIcon sx={{ color: 'white', fontSize: 48 }} />
+                            </Box>
+                        </Box>
                         <ImageListItemBar
                             title={
-                            <Typography variant="subtitle1" component="h3" fontSize="1.2rem">
-                                {item.title}
-                            </Typography>}
+                                <Typography variant="subtitle1" component="h3" fontSize="1.2rem">
+                                    {item.title}
+                                </Typography>}
                             subtitle={
                                 <Box>
-                                    <Typography fontSize="0.8rem">{item.username}</Typography>
-                                    <Typography fontSize="0.8rem">{item.uploadDate}</Typography>
+                                    <Typography>{item.username} • {formatUploadDate(item.uploadDate)}</Typography>
                                 </Box>
                             }
                             position="below"
