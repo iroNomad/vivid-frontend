@@ -124,6 +124,10 @@ export default function MyPage() {
             alert("영상 파일을 선택하십시오!");
             return;
         }
+        if (title == '') {
+            alert("제목 입력이 필요합니다!");
+            return;
+        }
 
         setIsUploading(true); // Set uploading state to true
 
