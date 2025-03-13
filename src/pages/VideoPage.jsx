@@ -57,7 +57,7 @@ export default function VideoPage() {
                 gap: 2,
             }}>
                 <Typography variant="h4">{video.title}</Typography>
-                <Typography variant="subtitle1">{video.username} - {video.uploadDate}</Typography>
+                <Typography variant="subtitle1">{video.username} • {video.uploadDate}</Typography>
                 <Typography variant="body1">{video.description}</Typography>
             </Box>
         </Box>

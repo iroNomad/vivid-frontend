@@ -225,6 +225,7 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
 
     const handleSearchSubmit = (event) => {
         event.preventDefault();
+        navigate("/");
         onSearch(searchQuery);
     };
 
@@ -450,6 +451,7 @@ export default function PrimarySearchAppBar({loginState, onSearch}) {
                     <br/>
                     <br/>
                     <TextField
+                        type="password"
                         id="outlined-basic"
                         label="비밀번호 확인"
                         variant="outlined"
