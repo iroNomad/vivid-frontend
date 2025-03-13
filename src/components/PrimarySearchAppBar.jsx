@@ -1,24 +1,10 @@
-import * as React from 'react';
+import React from 'react';
 import { styled, alpha } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
-import HomeIcon from '@mui/icons-material/Home';
-import SearchIcon from '@mui/icons-material/Search';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import MoreIcon from '@mui/icons-material/MoreVert';
+import { AppBar, Box, Toolbar, IconButton, Typography, InputBase, MenuItem, Menu, Modal, Button, TextField, ImageListItem, ImageList } from '@mui/material';
+import { HomeIcon, SearchIcon, AccountCircle, MoreIcon, CloseIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import Modal from '@mui/material/Modal';
-import {Button, TextField} from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
-import {useState} from "react";
+import { useState } from 'react';
 import { BASE_URL } from '../config';
-import {ImageListItem, ImageList} from "@mui/material";
 import { ImageUrls } from '../assets/profileImg.js';
 
 const Search = styled('div')(({ theme }) => ({

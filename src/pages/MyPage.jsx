@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {Stack, Button, Modal, Box, Typography, TextField, Input, Container, Menu, MenuItem} from "@mui/material";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import PersonOffIcon from '@mui/icons-material/PersonOff';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import {useNavigate} from "react-router-dom";
+import { Stack, Button, Modal, Box, Typography, TextField, Input, Container, Menu, MenuItem } from "@mui/material";
+import { CloudUpload as CloudUploadIcon, MoreHoriz as MoreHorizIcon } from '@mui/icons-material';
+import { useNavigate } from "react-router-dom";
 import { BASE_URL } from '../config.js';
 import { ImageUrls } from "../assets/profileImg.js";
 

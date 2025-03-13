@@ -1,10 +1,6 @@
-import * as React from 'react';
-import ImageList from '@mui/material/ImageList';
-import ImageListItem from '@mui/material/ImageListItem';
-import ImageListItemBar from '@mui/material/ImageListItemBar';
+import React from 'react';
+import { ImageList, ImageListItem, ImageListItemBar, Typography, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
-import Typography from "@mui/material/Typography";
-import Box from '@mui/material/Box';
 
 export default function TitlebarBelowImageList({videos}) {
     return (
