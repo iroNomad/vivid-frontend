@@ -351,7 +351,6 @@ export default function MyPage() {
                         role={undefined}
                         variant="contained"
                         tabIndex={-1}
-                        // startIcon={<CloudUploadIcon />}
                     >
                         <Box display="flex" flexDirection="column">
                             <Typography>파일 선택</Typography>
